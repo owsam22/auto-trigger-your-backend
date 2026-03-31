@@ -7,7 +7,11 @@ const { startTriggerJob } = require('./jobs/triggerJob');
 const app = express();
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+app.use(cors({ 
+  origin: [clientUrl, clientUrl.replace(/\/$/, "")], 
+  credentials: true 
+}));
 app.use(express.json());
 
 // Routes
