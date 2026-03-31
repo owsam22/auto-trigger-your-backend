@@ -22,7 +22,7 @@ export const SubmitModal = ({ isOpen, onClose, onSuccess }) => {
 
     setLoading(true);
     try {
-      await api.post('/submit', { url: url.trim() });
+      await api.post('/submissions/create', { url: url.trim() });
       toast.success('🚀 URL submitted! Awaiting admin approval.');
       setUrl('');
       onSuccess?.();

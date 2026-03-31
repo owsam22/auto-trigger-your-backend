@@ -28,7 +28,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const { data } = await api.get('/my-submissions');
+      const { data } = await api.get('/submissions/mine');
       setSubmissions(data);
     } catch {
       toast.error('Failed to load submissions');
