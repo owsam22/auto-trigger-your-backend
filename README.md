@@ -3,7 +3,7 @@
 **TriggerPulse** is a professional backend monitoring and wake-up service designed to keep your "sleeping" servers (like those on Render or Heroku) alive and responsive. 
 
 ### 🌐 Live Links
-- **App**: [https://auto-trigger-your-backend.vercel.app](https://auto-trigger-your-backend.vercel.app)
+- **App**: [https://auto-trigger-your-backend.vercel.app](https://auto-trigger-your-backend.vercel.app)  {} under development might be unavailable sometimes {}
 
 
 ---
