@@ -28,9 +28,9 @@ export const Navbar = () => {
       transition={{ duration: 0.4 }}
       style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: 'rgba(10,10,15,0.85)',
+        background: 'rgba(255,255,255,0.75)',
         backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '1px solid #e5e7eb',
       }}
     >
       <div style={{
@@ -58,8 +58,8 @@ export const Navbar = () => {
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '7px 14px', borderRadius: 8, textDecoration: 'none',
               fontSize: 14, fontWeight: 500,
-              color: location.pathname === link.to ? 'var(--text-primary)' : 'var(--text-secondary)',
-              background: location.pathname === link.to ? 'rgba(255,255,255,0.08)' : 'transparent',
+              color: location.pathname === link.to ? '#4f46e5' : '#64748b',
+              background: location.pathname === link.to ? 'rgba(79, 70, 229, 0.05)' : 'transparent',
               transition: 'all 0.2s',
             }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
@@ -72,10 +72,10 @@ export const Navbar = () => {
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 8 }}>
               <span style={{
-                fontSize: 13, color: 'var(--text-secondary)',
-                background: 'rgba(255,255,255,0.05)',
+                fontSize: 13, color: '#64748b',
+                background: '#f1f5f9',
                 padding: '5px 12px', borderRadius: 8,
-                border: '1px solid var(--border)',
+                border: '1px solid #e2e8f0',
               }}>
                 {user.email}
               </span>

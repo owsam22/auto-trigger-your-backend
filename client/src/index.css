@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #0f0f1a;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.16);
-  --text-primary: #f0f0ff;
-  --text-secondary: #8b8ba8;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(99, 102, 241, 0.2);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
   --accent-blue: #6366f1;
   --accent-purple: #8b5cf6;
-  --accent-cyan: #06b6d4;
-  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --accent-cyan: #0ea5e9;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
 }
 
 * {
@@ -36,15 +36,14 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
 /* Glass card */
 .glass {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .glass:hover {
@@ -147,22 +146,22 @@ body {
 
 /* Input styling */
 .input-dark {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   color: var(--text-primary);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: 14px;
   width: 100%;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
   font-family: 'Inter', sans-serif;
 }
 
-.input-dark::placeholder { color: var(--text-secondary); }
+.input-dark::placeholder { color: #94a3b8; }
 .input-dark:focus {
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
 }
 
 /* Table */
@@ -183,5 +182,5 @@ body {
   color: var(--text-primary);
   vertical-align: middle;
 }
-.tp-table tr:hover td { background: rgba(255,255,255,0.02); }
+.tp-table tr:hover td { background: #f8fafc; }
 .tp-table tr:last-child td { border-bottom: none; }

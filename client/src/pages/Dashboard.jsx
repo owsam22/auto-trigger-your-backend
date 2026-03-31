@@ -97,19 +97,17 @@ export default function Dashboard() {
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 32 }}>
           {loading ? (
-            [0,1,2,3].map(i => <CardSkeleton key={i} />)
+            [0,1].map(i => <CardSkeleton key={i} />)
           ) : (
             <>
               <StatCard icon="🔗" label="Total URLs"   value={stats.total}   color="#6366f1" delay={0}    />
               <StatCard icon="✅" label="Active"        value={stats.active}  color="#4ade80" delay={0.1}  />
-              <StatCard icon="❌" label="Failed"        value={stats.failed}  color="#f87171" delay={0.2}  />
-              <StatCard icon="⏳" label="Pending"       value={stats.pending} color="#fbbf24" delay={0.3}  />
             </>
           )}
         </div>
 
         {/* Chart + Table layout */}
-        <div style={{ display: 'grid', gridTemplateColumns: stats.total > 0 ? '1fr 260px' : '1fr', gap: 20, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20, alignItems: 'start' }}>
           {/* Table */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -147,34 +145,28 @@ export default function Dashboard() {
                   <thead>
                     <tr>
                       <th>URL</th>
-                      <th>Status</th>
                       <th><div style={{ display:'flex', alignItems:'center', gap:5 }}><Clock size={12} />Last Triggered</div></th>
-                      <th><div style={{ display:'flex', alignItems:'center', gap:5 }}><Activity size={12} />Last Status</div></th>
-                      <th>Fail Count</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={5} style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
+                        <td colSpan={3} style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
                           {search ? 'No URLs match your search.' : 'No submissions yet. Submit your first URL!'}
                         </td>
                       </tr>
                     ) : filtered.map(sub => (
                       <tr key={sub._id}>
-                        <td style={{ maxWidth: 260, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                        <td style={{ maxWidth: 400, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                           <a href={sub.url} target="_blank" rel="noopener noreferrer"
-                            style={{ color: '#a5b4fc', textDecoration: 'none', fontSize: 13 }}
+                            style={{ color: '#4f46e5', fontWeight: 500, textDecoration: 'none', fontSize: 14 }}
                             title={sub.url}>
                             {sub.url}
                           </a>
                         </td>
-                        <td><StatusBadge status={sub.isUnstable ? 'unstable' : sub.status} /></td>
-                        <td style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{fmtDate(sub.lastTriggered)}</td>
-                        <td>{sub.lastStatus ? <StatusBadge status={sub.lastStatus} /> : <span style={{ color:'var(--text-secondary)', fontSize:12 }}>—</span>}</td>
-                        <td style={{ fontSize: 13, color: sub.failCount > 3 ? '#f87171' : 'var(--text-secondary)', fontWeight: sub.failCount > 3 ? 600 : 400 }}>
-                          {sub.failCount}
-                        </td>
+                        <td style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{fmtDate(sub.lastTriggered)}</td>
+                        <td><StatusBadge status={sub.status} /></td>
                       </tr>
                     ))}
                   </tbody>
@@ -183,45 +175,6 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
-          {/* Pie chart */}
-          {!loading && stats.total > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.35 }}
-              className="glass"
-              style={{ borderRadius: 20, padding: 24 }}
-            >
-              <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 20, color: 'var(--text-primary)' }}>
-                Status Overview
-              </h3>
-              <ResponsiveContainer width="100%" height={180}>
-                <PieChart>
-                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80}
-                    dataKey="value" paddingAngle={3}>
-                    {pieData.map((_, i) => (
-                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} opacity={0.85} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{
-                    background: '#0f0f1a', border: '1px solid var(--border)',
-                    borderRadius: 8, fontSize: 12,
-                  }} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
-                {pieData.map((d, i) => (
-                  <div key={d.name} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', fontSize:13 }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                      <div style={{ width:10, height:10, borderRadius:3, background: PIE_COLORS[i % PIE_COLORS.length] }} />
-                      <span style={{ color: 'var(--text-secondary)' }}>{d.name}</span>
-                    </div>
-                    <span style={{ fontWeight:600 }}>{d.value}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
         </div>
       </div>
 

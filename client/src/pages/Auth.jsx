@@ -60,8 +60,10 @@ export default function Auth() {
           style={{
             width: '100%', maxWidth: 420, borderRadius: 24,
             padding: '40px 36px',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.06)',
             position: 'relative',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
           }}
         >
           {/* Logo */}
@@ -159,7 +161,7 @@ export default function Auth() {
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button onClick={toggleMode} style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#a5b4fc', fontWeight: 600, fontSize: 14,
+              color: '#4f46e5', fontWeight: 600, fontSize: 14,
               textDecoration: 'underline', textUnderlineOffset: 3,
             }}>
               {mode === 'login' ? 'Sign up' : 'Sign in'}

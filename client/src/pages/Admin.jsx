@@ -98,8 +98,8 @@ export default function Admin() {
           <button onClick={() => fetchData(true)} disabled={refreshing} style={{
             display:'flex', alignItems:'center', gap:6,
             padding:'9px 16px', borderRadius:10, cursor:'pointer',
-            background:'rgba(255,255,255,0.04)', border:'1px solid var(--border)',
-            color:'var(--text-secondary)', fontSize:13, fontWeight:500, transition:'all 0.2s',
+            background:'#ffffff', border:'1px solid #e2e8f0',
+            color:'#64748b', fontSize:13, fontWeight:500, transition:'all 0.2s',
           }}>
             <RefreshCw size={14} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
             Refresh
@@ -146,9 +146,9 @@ export default function Admin() {
                   padding:'6px 14px', borderRadius:8, cursor:'pointer', fontSize:13,
                   fontWeight:500, textTransform:'capitalize', border:'1px solid',
                   transition:'all 0.2s',
-                  background: filter === f ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.03)',
-                  borderColor: filter === f ? 'rgba(99,102,241,0.4)' : 'var(--border)',
-                  color: filter === f ? '#a5b4fc' : 'var(--text-secondary)',
+                  background: filter === f ? 'rgba(79, 70, 229, 0.1)' : 'rgba(255,255,255,0.8)',
+                  borderColor: filter === f ? 'rgba(79, 70, 229, 0.4)' : '#e2e8f0',
+                  color: filter === f ? '#4f46e5' : '#64748b',
                 }}>
                   {f}
                 </button>
@@ -181,7 +181,7 @@ export default function Admin() {
                     <tr key={sub._id}>
                       <td style={{ maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                         <a href={sub.url} target="_blank" rel="noopener noreferrer"
-                          style={{ color:'#a5b4fc', textDecoration:'none', fontSize:13 }} title={sub.url}>
+                          style={{ color:'#4f46e5', fontWeight: 500, textDecoration:'none', fontSize:13 }} title={sub.url}>
                           {sub.url}
                         </a>
                       </td>
