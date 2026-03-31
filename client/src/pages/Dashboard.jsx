@@ -7,10 +7,9 @@ import { StatCard } from '../components/StatCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { LoadingSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
 import { SubmitModal } from '../components/SubmitModal';
-import { PlusCircle, RefreshCw, Search, Link2, Clock, Activity } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PlusCircle, RefreshCw, Search, Link2, Clock } from 'lucide-react';
 
-const PIE_COLORS = ['#6366f1', '#4ade80', '#f87171'];
+
 
 const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', {
   month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -47,15 +46,7 @@ export default function Dashboard() {
   const stats = {
     total: submissions.length,
     active: submissions.filter(s => s.status === 'approved').length,
-    failed: submissions.filter(s => s.lastStatus === 'fail').length,
-    pending: submissions.filter(s => s.status === 'pending').length,
   };
-
-  const pieData = [
-    { name: 'Pending', value: stats.pending },
-    { name: 'Active',  value: stats.active  },
-    { name: 'Failed',  value: stats.failed  },
-  ].filter(d => d.value > 0);
 
   return (
     <div style={{ minHeight: 'calc(100vh - 64px)', padding: '32px 24px' }}>
@@ -72,15 +63,15 @@ export default function Dashboard() {
               My Dashboard
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
-              Welcome back, <span style={{ color: '#a5b4fc' }}>{user?.email}</span>
+              Welcome back, <span style={{ color: '#4f46e5', fontWeight: 600 }}>{user?.email}</span>
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => fetchSubmissions(true)} disabled={refreshing} style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '9px 16px', borderRadius: 10, cursor: 'pointer',
-              background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
-              color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500, transition: 'all 0.2s',
+              background: '#ffffff', border: '1px solid #e2e8f0',
+              color: '#64748b', fontSize: 13, fontWeight: 500, transition: 'all 0.2s',
             }}>
               <RefreshCw size={14} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
               Refresh

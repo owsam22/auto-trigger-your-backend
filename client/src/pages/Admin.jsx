@@ -235,8 +235,8 @@ export default function Admin() {
                             style={{
                               display:'flex', alignItems:'center', justifyContent:'center',
                               width:30, height:30, borderRadius:7, cursor:'pointer',
-                              border:'1px solid rgba(255,255,255,0.1)',
-                              background:'rgba(255,255,255,0.04)', color:'var(--text-secondary)',
+                              border:'1px solid #e2e8f0',
+                              background:'#ffffff', color:'#64748b',
                               transition:'all 0.2s', opacity: actionId === sub._id ? 0.5 : 1,
                             }}
                           >

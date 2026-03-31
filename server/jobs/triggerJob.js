@@ -1,90 +1,132 @@
 const cron = require('node-cron');
 const axios = require('axios');
+const pLimit = require('p-limit');
 const Submission = require('../models/Submission');
 
-const triggerSingleSubmission = async (submissionId) => {
-  try {
-    const submission = await Submission.findById(submissionId);
-    if (!submission || submission.status !== 'approved') return;
+const limit = pLimit(5); // 🔥 max 5 parallel requests
 
-    console.log(`[TRIGGER] Ping: ${submission.url}`);
-    
-    try {
-      await axios.get(submission.url, { 
-        timeout: 8000,
-        headers: {
-          'User-Agent': 'TriggerPulse/1.0 (Monitoring; uptime check)',
-          'Accept': '*/*'
-        }
-      });
-      
+// ----------------------
+// SINGLE TRIGGER
+// ----------------------
+const triggerSingleSubmission = async (submission) => {
+  if (!submission || submission.status !== 'approved') return;
+
+  console.log(`[TRIGGER] Ping: ${submission.url}`);
+
+  try {
+    await axios.get(submission.url, {
+      timeout: 8000,
+      headers: {
+        'User-Agent': 'TriggerPulse/1.0'
+      },
+      validateStatus: () => true // treat ALL HTTP responses as success
+    });
+
+    await Submission.findByIdAndUpdate(submission._id, {
+      lastTriggered: new Date(),
+      lastStatus: 'success',
+      failCount: 0,
+      isUnstable: false
+    });
+
+    console.log(`[TRIGGER] ✅ Alive: ${submission.url}`);
+
+  } catch (err) {
+    // If it's a timeout, it still triggered the server! Treat as success.
+    if (err.code === 'ECONNABORTED' || err.message.toLowerCase().includes('timeout')) {
       await Submission.findByIdAndUpdate(submission._id, {
         lastTriggered: new Date(),
         lastStatus: 'success',
         failCount: 0,
-        isUnstable: false,
+        isUnstable: false
       });
-      console.log(`[TRIGGER] ✅ Success: ${submission.url}`);
-    } catch (err) {
-      const newFailCount = (submission.failCount || 0) + 1;
-      await Submission.findByIdAndUpdate(submission._id, {
-        lastTriggered: new Date(),
-        lastStatus: 'fail',
-        failCount: newFailCount,
-        isUnstable: newFailCount > 3,
-      });
-      console.log(`[TRIGGER] ❌ Failed: ${submission.url} - ${err.message}`);
+      console.log(`[TRIGGER] ⚡ Waking up: ${submission.url} (Timeout)`);
+      return;
     }
-  } catch (err) {
-    console.error(`[TRIGGER] Error monitoring ${submissionId}:`, err.message);
-  }
-};
 
-const triggerApprovedUrls = async () => {
-  const now = new Date();
-  console.log(`[CRON] Minute check started at ${now.toISOString()}`);
-  try {
-    const approvedSubmissions = await Submission.find({ status: 'approved' });
-    
-    // Filter for submissions that need triggering:
-    // Either they haven't been triggered yet (lastTriggered is null)
-    // OR it's been at least 10 minutes (600,000 ms) since the last trigger
-    const toTrigger = approvedSubmissions.filter(sub => {
-      const lastActionTime = sub.lastTriggered || sub.createdAt;
-      const diffMs = now - new Date(lastActionTime);
-      return diffMs >= 10 * 60 * 1000; // 10 minutes in ms
+    // Only real network / connection failures increment failCount
+    const newFailCount = (submission.failCount || 0) + 1;
+    await Submission.findByIdAndUpdate(submission._id, {
+      lastTriggered: new Date(),
+      lastStatus: 'fail',
+      failCount: newFailCount,
+      isUnstable: newFailCount > 3
     });
 
-    if (toTrigger.length > 0) {
-      console.log(`[CRON] Found ${toTrigger.length} URL(s) ready for their 10-min pulse`);
-      const promises = toTrigger.map(sub => triggerSingleSubmission(sub._id));
-      await Promise.allSettled(promises);
-    }
-  } catch (err) {
-    console.error('[CRON] Job error:', err.message);
+    console.log(`[TRIGGER] ❌ Down: ${submission.url} - ${err.message}`);
   }
 };
 
+// ----------------------
+// BATCH TRIGGER (SMART QUERY)
+// ----------------------
+const triggerApprovedUrls = async () => {
+  const now = new Date();
+  const threshold = new Date(now.getTime() - 10 * 60 * 1000);
+
+  console.log(`[CRON] Checking at ${now.toISOString()}`);
+
+  try {
+    // 🔥 DB-level filtering (NO full scan)
+    const toTrigger = await Submission.find({
+      status: 'approved',
+      $or: [
+        { lastTriggered: { $exists: false } },
+        { lastTriggered: { $lte: threshold } }
+      ]
+    })
+    .sort({ lastTriggered: 1 }) // oldest first
+    .limit(100); // 🔥 prevents overload
+
+    if (!toTrigger.length) return;
+
+    console.log(`[CRON] Triggering ${toTrigger.length} URLs`);
+
+    await Promise.allSettled(
+      toTrigger.map(sub => limit(() => triggerSingleSubmission(sub)))
+    );
+
+  } catch (err) {
+    console.error('[CRON] Error:', err.message);
+  }
+};
+
+// ----------------------
+// KEEP BACKEND ALIVE
+// ----------------------
 const selfPing = async () => {
   const url = process.env.SELF_URL || `http://localhost:${process.env.PORT || 5000}`;
+
+  if (!url) {
+    console.log('[KEEP-ALIVE] No SELF_URL set');
+    return;
+  }
+
   try {
-    await axios.get(url, { timeout: 5000 });
-    console.log(`[KEEP-ALIVE] Self-ping successful: ${url}`);
+    await axios.get(url, {
+      timeout: 5000,
+      validateStatus: () => true
+    });
+
+    console.log('[KEEP-ALIVE] ✅ Self-ping success');
+
   } catch (err) {
-    console.log(`[KEEP-ALIVE] Self-ping failed (expected if local): ${err.message}`);
+    console.log(`[KEEP-ALIVE] ❌ Failed: ${err.message}`);
   }
 };
 
+// ----------------------
+// START SYSTEM
+// ----------------------
 const startTriggerJob = () => {
-  // Run staggered check immediately and then every 10 minute
-  triggerApprovedUrls();
-  cron.schedule('*/10 * * * *', triggerApprovedUrls);
-  
-  // Run self-ping every 10 minutes to keep deployment alive
-  selfPing();
+
+  // 🔥 Runs every minute (precision scheduling)
+  cron.schedule('* * * * *', triggerApprovedUrls);
+
+  // 🔥 Keeps backend alive (critical)
   cron.schedule('*/5 * * * *', selfPing);
 
-  console.log('[CRON] Staggered trigger job (1min check) and Keep-alive (10min) started');
+  console.log('[CRON] 🚀 Optimized Trigger System Started');
 };
 
 module.exports = { startTriggerJob, triggerApprovedUrls, triggerSingleSubmission };
