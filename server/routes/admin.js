@@ -42,7 +42,7 @@ router.patch('/approve/:id', async (req, res) => {
     const submission = await Submission.findByIdAndUpdate(
       req.params.id,
       { status: 'approved' },
-      { new: true }
+      { returnDocument: 'after' }
     ).populate('submittedBy', 'email');
     if (!submission) return res.status(404).json({ message: 'Submission not found' });
     
@@ -61,7 +61,7 @@ router.patch('/reject/:id', async (req, res) => {
     const submission = await Submission.findByIdAndUpdate(
       req.params.id,
       { status: 'rejected' },
-      { new: true }
+      { returnDocument: 'after' }
     ).populate('submittedBy', 'email');
     if (!submission) return res.status(404).json({ message: 'Submission not found' });
     res.json(submission);

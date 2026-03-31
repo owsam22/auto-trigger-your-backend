@@ -27,7 +27,7 @@ const triggerSingleSubmission = async (submission) => {
       lastStatus: 'success',
       failCount: 0,
       isUnstable: false
-    });
+    }, { returnDocument: 'after' });
 
     console.log(`[TRIGGER] ✅ Alive: ${submission.url}`);
 
@@ -39,7 +39,7 @@ const triggerSingleSubmission = async (submission) => {
         lastStatus: 'success',
         failCount: 0,
         isUnstable: false
-      });
+      }, { returnDocument: 'after' });
       console.log(`[TRIGGER] ⚡ Waking up: ${submission.url} (Timeout)`);
       return;
     }
@@ -51,7 +51,7 @@ const triggerSingleSubmission = async (submission) => {
       lastStatus: 'fail',
       failCount: newFailCount,
       isUnstable: newFailCount > 3
-    });
+    }, { returnDocument: 'after' });
 
     console.log(`[TRIGGER] ❌ Down: ${submission.url} - ${err.message}`);
   }
