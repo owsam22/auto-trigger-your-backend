@@ -64,23 +64,19 @@ const triggerApprovedUrls = async () => {
   const now = new Date();
   const threshold = new Date(now.getTime() - 10 * 60 * 1000);
 
-  console.log(`[CRON] Checking at ${now.toISOString()}`);
-
+  // Skip noise
   try {
-    // 🔥 DB-level filtering (NO full scan)
     const toTrigger = await Submission.find({
       status: 'approved',
       $or: [
         { lastTriggered: { $exists: false } },
         { lastTriggered: { $lte: threshold } }
       ]
-    })
-    .sort({ lastTriggered: 1 }) // oldest first
-    .limit(100); // 🔥 prevents overload
+    }).limit(100);
 
     if (!toTrigger.length) return;
 
-    console.log(`[CRON] Triggering ${toTrigger.length} URLs`);
+    console.log(`[CRON] ⚡ Triggering ${toTrigger.length} URLs (Batch Process)`);
 
     await Promise.allSettled(
       toTrigger.map(sub => limit(() => triggerSingleSubmission(sub)))
@@ -96,20 +92,11 @@ const triggerApprovedUrls = async () => {
 // ----------------------
 const selfPing = async () => {
   const url = process.env.SELF_URL || `http://localhost:${process.env.PORT || 5000}`;
-
-  if (!url) {
-    console.log('[KEEP-ALIVE] No SELF_URL set');
-    return;
-  }
+  if (!url) return;
 
   try {
-    await axios.get(url, {
-      timeout: 5000,
-      validateStatus: () => true
-    });
-
-    console.log('[KEEP-ALIVE] ✅ Self-ping success');
-
+    await axios.get(url, { timeout: 5000, validateStatus: () => true });
+    // Success is quiet to keep logs clean
   } catch (err) {
     console.log(`[KEEP-ALIVE] ❌ Failed: ${err.message}`);
   }
@@ -119,14 +106,13 @@ const selfPing = async () => {
 // START SYSTEM
 // ----------------------
 const startTriggerJob = () => {
-
-  // 🔥 Runs every minute (precision scheduling)
+  // Check every minute for anything due (10-min interval)
   cron.schedule('* * * * *', triggerApprovedUrls);
 
-  // 🔥 Keeps backend alive (critical)
+  // Keep Render alive
   cron.schedule('*/5 * * * *', selfPing);
 
-  console.log('[CRON] 🚀 Optimized Trigger System Started');
+  console.log('[CRON] 🚀 Optimized Trigger System Active (10-min staggered interval)');
 };
 
 module.exports = { startTriggerJob, triggerApprovedUrls, triggerSingleSubmission };

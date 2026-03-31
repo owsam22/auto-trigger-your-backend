@@ -23,7 +23,7 @@ export const SubmitModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
     try {
       await api.post('/submissions/create', { url: url.trim() });
-      toast.success('🚀 URL submitted! Awaiting admin approval.');
+      toast.success('🚀 URL submitted! Once approved, it will be triggered every 10 minutes.');
       setUrl('');
       onSuccess?.();
       onClose();
@@ -61,10 +61,10 @@ export const SubmitModal = ({ isOpen, onClose, onSuccess }) => {
               position: 'fixed', top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 201, width: '90%', maxWidth: 480,
-              background: '#0f0f1a',
-              border: '1px solid var(--border)',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
               borderRadius: 20, padding: 32,
-              boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.1)',
             }}
           >
             {/* Header */}
