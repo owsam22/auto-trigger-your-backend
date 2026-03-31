@@ -46,6 +46,9 @@ router.patch('/approve/:id', async (req, res) => {
     ).populate('submittedBy', 'email');
     if (!submission) return res.status(404).json({ message: 'Submission not found' });
     
+    // 🔥 Instant trigger on approval
+    triggerSingleSubmission(submission);
+    
     res.json(submission);
   } catch (err) {
     res.status(500).json({ message: err.message });

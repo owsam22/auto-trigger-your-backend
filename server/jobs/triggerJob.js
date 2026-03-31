@@ -58,25 +58,16 @@ const triggerSingleSubmission = async (submission) => {
 };
 
 // ----------------------
-// BATCH TRIGGER (SMART QUERY)
+// BATCH TRIGGER (ALL APPROVED)
 // ----------------------
 const triggerApprovedUrls = async () => {
-  const now = new Date();
-  const threshold = new Date(now.getTime() - 10 * 60 * 1000);
-
-  // Skip noise
   try {
-    const toTrigger = await Submission.find({
-      status: 'approved',
-      $or: [
-        { lastTriggered: { $exists: false } },
-        { lastTriggered: { $lte: threshold } }
-      ]
-    }).limit(100);
+    // 🔥 Trigger ALL approved URLs at once every 10 mins
+    const toTrigger = await Submission.find({ status: 'approved' });
 
     if (!toTrigger.length) return;
 
-    console.log(`[CRON] ⚡ Triggering ${toTrigger.length} URLs (Batch Process)`);
+    console.log(`[CRON] ⚡ Triggering ${toTrigger.length} URLs (10-min cycle)`);
 
     await Promise.allSettled(
       toTrigger.map(sub => limit(() => triggerSingleSubmission(sub)))
@@ -96,7 +87,6 @@ const selfPing = async () => {
 
   try {
     await axios.get(url, { timeout: 5000, validateStatus: () => true });
-    // Success is quiet to keep logs clean
   } catch (err) {
     console.log(`[KEEP-ALIVE] ❌ Failed: ${err.message}`);
   }
@@ -106,13 +96,13 @@ const selfPing = async () => {
 // START SYSTEM
 // ----------------------
 const startTriggerJob = () => {
-  // Check every minute for anything due (10-min interval)
-  cron.schedule('* * * * *', triggerApprovedUrls);
+  // 🔥 Run strictly every 10 minutes
+  cron.schedule('*/10 * * * *', triggerApprovedUrls);
 
   // Keep Render alive
   cron.schedule('*/5 * * * *', selfPing);
 
-  console.log('[CRON] 🚀 Optimized Trigger System Active (10-min staggered interval)');
+  console.log('[CRON] 🚀 Trigger System Active (10-min interval)');
 };
 
 module.exports = { startTriggerJob, triggerApprovedUrls, triggerSingleSubmission };
