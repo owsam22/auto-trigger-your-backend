@@ -56,7 +56,7 @@ export const Footer = ({ variant = 'simple' }) => {
             <div className="socials">
               <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer"><Code size={20} /></a>
               <a href="#"><Globe size={20} /></a>
-              <a href="mailto:hello@triggerpulse.com"><Mail size={20} /></a>
+              <a href="mailto:22.samarpan@gmail.com"><Mail size={20} /></a>
             </div>
           </div>
 

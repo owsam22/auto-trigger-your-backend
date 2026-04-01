@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Zap, Shield, BarChart3, Clock, CheckCircle, ArrowRight, Globe } from 'lucide-react';
+import { Zap, Shield, BarChart3, Clock, CheckCircle, ArrowRight, Globe, AlertCircle } from 'lucide-react';
 import Button from '../components/button';
 import { Footer } from '../components/Footer';
 
@@ -10,8 +10,8 @@ const features = [
     icon: <Zap size={24} color="#6366f1" />,
     bg: 'rgba(99,102,241,0.1)',
     border: 'rgba(99,102,241,0.2)',
-    title: 'Auto-Triggering',
-    desc: 'Your backend URLs are pinged every 10 minutes automatically, keeping free-tier servers warm and responsive.',
+    title: 'Keep it Warm',
+    desc: 'Never let your backend fall asleep. Use regular pulses to bypass free-tier inactivity limits and eliminate cold starts.',
   },
   {
     icon: <BarChart3 size={24} color="#8b5cf6" />,
@@ -35,6 +35,83 @@ const steps = [
   { num: '03', title: 'Auto-Triggered',   desc: 'The system pings your URL every 10 minutes, 24/7.' },
 ];
 
+const ComparisonSection = () => (
+  <div style={{ 
+    display: 'grid', 
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+    gap: 20, 
+    maxWidth: 900, 
+    margin: '0 auto 48px',
+    textAlign: 'left'
+  }}>
+    {/* Problem */}
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.2, duration: 0.6 }}
+      className="glass"
+      style={{
+        padding: 24,
+        borderRadius: 20,
+        background: 'rgba(239, 68, 68, 0.03)',
+        border: '1px solid rgba(239, 68, 68, 0.15)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        <div style={{ 
+          padding: 8, 
+          background: 'rgba(239, 68, 68, 0.1)', 
+          borderRadius: 10,
+          color: '#f87171'
+        }}>
+          <AlertCircle size={20} />
+        </div>
+        <h4 style={{ fontSize: 16, fontWeight: 700, color: '#f87171' }}>The Problem</h4>
+      </div>
+      <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+        Free hosting puts your app to <strong>"sleep"</strong>. 
+        Your visitors wait <strong>30+ seconds</strong> for the first load.
+      </p>
+    </motion.div>
+
+    {/* Solution */}
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.3, duration: 0.6 }}
+      className="glass"
+      style={{
+        padding: 24,
+        borderRadius: 20,
+        background: 'rgba(99, 102, 241, 0.05)',
+        border: '1px solid rgba(99, 102, 241, 0.2)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        <div style={{ 
+          padding: 8, 
+          background: 'rgba(99, 102, 241, 0.1)', 
+          borderRadius: 10,
+          color: '#818cf8'
+        }}>
+          <Zap size={20} />
+        </div>
+        <h4 style={{ fontSize: 16, fontWeight: 700, color: '#818cf8' }}>The Solution</h4>
+      </div>
+      <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+        TriggerPulse sends a <strong>"wake-up pulse"</strong> every 10 mins. 
+        Your app stays awake and responds <strong>instantly</strong>.
+      </p>
+    </motion.div>
+  </div>
+);
+
 export default function Landing() {
   const { user } = useAuth();
 
@@ -47,7 +124,7 @@ export default function Landing() {
         <div className="orb" style={{ width: 400, height: 400, background: '#8b5cf6', opacity: 0.06, top: -50, right: '10%', animationDelay: '2s' }} />
         <div className="orb" style={{ width: 300, height: 300, background: '#06b6d4', opacity: 0.05, bottom: -50, left: '40%', animationDelay: '4s' }} />
 
-        <div style={{ maxWidth: 800, margin: '0 auto', position: 'relative' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative' }}>
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,22 +146,13 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
             style={{ fontSize: 'clamp(36px,5vw,72px)', fontWeight: 900, lineHeight: 1.08,
-              letterSpacing: '-0.03em', marginBottom: 24, color: 'var(--text-primary)' }}
+              letterSpacing: '-0.03em', marginBottom: 40, color: 'var(--text-primary)' }}
           >
             Keep Your Backend<br />
             <span className="gradient-text">Alive Automatically</span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            style={{ fontSize: 18, color: 'var(--text-secondary)', maxWidth: 540,
-              margin: '0 auto 40px', lineHeight: 1.7 }}
-          >
-            TriggerPulse automatically pings your backend APIs every 10 minutes so they never go cold.
-            Submit, get approved, and stay online—effortlessly.
-          </motion.p>
+          <ComparisonSection />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
