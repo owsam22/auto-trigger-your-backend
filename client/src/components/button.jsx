@@ -56,13 +56,13 @@ const StyledWrapper = styled.div`
 
   /* Primary (Solid) */
   &.variant-primary .animated-button {
-    background-color: #6366f1;
+    background-color: var(--accent-purple);
     color: #ffffff;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   }
 
   &.variant-primary .animated-button .circle {
-    background-color: #4f46e5; /* Darker indigo for hover */
+    background-color: #7c3aed; /* Darker purple for hover */
   }
 
   /* Outline (Transparent) */

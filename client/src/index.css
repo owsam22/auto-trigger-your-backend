@@ -2,17 +2,18 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f5f3ff; /* Soft lavender background */
   --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --border: rgba(0, 0, 0, 0.06);
-  --border-hover: rgba(99, 102, 241, 0.2);
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --border: rgba(139, 92, 246, 0.1);
+  --border-hover: rgba(139, 92, 246, 0.3);
+  --text-primary: #1e1b4b; /* Deep indigo text */
+  --text-secondary: #52527a;
   --accent-blue: #6366f1;
   --accent-purple: #8b5cf6;
-  --accent-cyan: #0ea5e9;
-  --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --accent-cyan: #06b6d4;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --nav-bg: rgba(255, 255, 255, 0.8);
 }
 
 * {
@@ -42,12 +43,14 @@ body {
 /* Glass card */
 .glass {
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
 }
 
 .glass:hover {
   border-color: var(--border-hover);
+  box-shadow: 0 15px 40px -15px rgba(139, 92, 246, 0.1);
 }
 
 /* Gradient text */
@@ -114,6 +117,48 @@ body {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* Feature Ticker Animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-wrap {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  padding: 12px 0;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+  background: rgba(139, 92, 246, 0.03);
+}
+
+.ticker-content {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 25s linear infinite;
+  gap: 60px;
+}
+
+.ticker-item {
+  color: #8b5cf6;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticker-dot {
+  width: 4px;
+  height: 4px;
+  background: #8b5cf6;
+  border-radius: 50%;
+  opacity: 0.3;
 }
 
 .animate-fade-in-up {
