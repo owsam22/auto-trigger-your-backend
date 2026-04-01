@@ -171,8 +171,25 @@ export default function Dashboard() {
                     <tbody>
                       {filtered.length === 0 ? (
                         <tr>
-                          <td colSpan={3} style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
-                            {search ? 'No URLs match your search.' : 'No submissions yet. Submit your first URL!'}
+                          <td colSpan={4} style={{ padding: '64px 24px', textAlign: 'center' }}>
+                            <div style={{
+                              width: 56, height: 56, background: 'rgba(99, 102, 241, 0.08)', borderRadius: '18px',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px',
+                              border: '1px solid rgba(99, 102, 241, 0.2)'
+                            }}>
+                              <Link2 size={22} color="#6366f1" />
+                            </div>
+                            <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+                              {search ? 'No results found' : 'No backends added yet'}
+                            </h3>
+                            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 300, margin: '0 auto 24px' }}>
+                              {search ? `We couldn't find any URLs matching "${search}"` : 'Start keeping your backend alive by submitting your first URL above.'}
+                            </p>
+                            {!search && (
+                              <Button onClick={() => setModalOpen(true)} size="small" variant="primary">
+                                <PlusCircle size={14} /> Add First URL
+                              </Button>
+                            )}
                           </td>
                         </tr>
                       ) : filtered.map(sub => (

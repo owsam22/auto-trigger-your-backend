@@ -55,15 +55,16 @@ export const UniversalModal = ({
               overflow: 'hidden'
             }}
           >
-            {/* Close Button (Optional: can be handled by children too) */}
+            {/* Close Button */}
             <button 
+              type="button"
               onClick={onClose}
               style={{
                 position: 'absolute', top: 20, right: 20,
                 background: 'transparent', border: 'none',
                 cursor: 'pointer', color: '#94a3b8',
                 padding: 4, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'color 0.2s'
+                transition: 'color 0.2s', zIndex: 1002
               }}
               onMouseEnter={e => e.currentTarget.style.color = '#475569'}
               onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
