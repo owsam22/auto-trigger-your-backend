@@ -121,7 +121,7 @@ export const Navbar = () => {
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
           boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)',
         }}>
-          <AlertTriangle size={16} /> The service is temporarily unavailable. Contact admin for this.
+          <AlertTriangle size={16} /> The service is under maintenance. Please contact the admin or try again later.
         </div>
       )}
     </motion.nav>

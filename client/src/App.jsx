@@ -110,7 +110,7 @@ const ServerDownInterceptor = () => {
           Service Unavailable
         </h3>
         <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24 }}>
-          The service is temporarily unavailable. Please contact the admin for this.
+          The service is under maintenance. Please contact the admin or try again later.
         </p>
         <button
           onClick={() => setModalOpen(false)}
