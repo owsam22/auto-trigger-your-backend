@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Link2, Loader2 } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import Button from './button';
 
 export const SubmitModal = ({ isOpen, onClose, onSuccess }) => {
   const [url, setUrl] = useState('');
@@ -118,13 +119,13 @@ export const SubmitModal = ({ isOpen, onClose, onSuccess }) => {
                 }}>
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="btn-gradient" style={{
+                <Button type="submit" disabled={loading} style={{
                   flex: 2, padding: '11px 0', borderRadius: 10, fontSize: 14,
                   fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   opacity: loading ? 0.7 : 1,
                 }}>
                   {loading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</> : '🚀 Submit URL'}
-                </button>
+                </Button>
               </div>
             </form>
           </motion.div>

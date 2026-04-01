@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn } from 'lucide-react';
+import Button from './button';
 
 export const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -46,9 +47,14 @@ export const Navbar = () => {
           }}>
             <Zap size={18} color="white" fill="white" />
           </div>
-          <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Trigger<span className="gradient-text">Pulse</span>
-          </span>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: 1 }}>
+              Trigger<span className="gradient-text">Pulse</span>
+            </span>
+            <span style={{ fontSize: 10, fontWeight: 500, color: 'var(--text-secondary)', marginTop: 2 }}>
+              auto trigger your backend
+            </span>
+          </div>
         </Link>
 
         {/* Desktop nav */}
@@ -92,14 +98,14 @@ export const Navbar = () => {
               </button>
             </div>
           ) : (
-            <Link to="/auth" style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '8px 18px', borderRadius: 8, textDecoration: 'none',
-              fontSize: 14, fontWeight: 600, color: 'white',
-              background: 'var(--gradient)', marginLeft: 8, transition: 'opacity 0.2s',
-            }}>
+            <Button
+              as={Link}
+              to="/auth"
+              size="small"
+              style={{ marginLeft: 8 }}
+            >
               <LogIn size={15} /> Sign In
-            </Link>
+            </Button>
           )}
         </div>
       </div>

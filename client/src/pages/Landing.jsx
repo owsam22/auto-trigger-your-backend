@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Zap, Shield, BarChart3, Clock, CheckCircle, ArrowRight, Globe } from 'lucide-react';
+import Button from '../components/button';
+import { Footer } from '../components/Footer';
 
 const features = [
   {
@@ -90,33 +92,18 @@ export default function Landing() {
             transition={{ delay: 0.3, duration: 0.6 }}
             style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}
           >
-            <Link
+            <Button
+              as={Link}
               to={user ? '/dashboard' : '/auth'}
-              className="btn-gradient"
+              variant="primary"
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '14px 32px', borderRadius: 12, fontSize: 15,
-                fontWeight: 700, textDecoration: 'none', color: 'white',
+                borderRadius: 12, fontSize: 16,
+                textDecoration: 'none',
               }}
             >
               {user ? 'Go to Dashboard' : 'Get Started Free'}
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              to="/auth"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '14px 28px', borderRadius: 12, fontSize: 15, fontWeight: 600,
-                textDecoration: 'none', color: 'var(--text-secondary)',
-                border: '1px solid var(--border)',
-                background: 'rgba(255,255,255,0.03)',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-            >
-              Sign In
-            </Link>
+              <ArrowRight size={18} />
+            </Button>
           </motion.div>
 
           {/* Stats bar */}
@@ -239,28 +226,22 @@ export default function Landing() {
           <p style={{ color: 'var(--text-secondary)', marginBottom: 32, fontSize: 15, lineHeight: 1.7 }}>
             Never let your backend fall asleep again. Free to use, no credit card required.
           </p>
-          <Link
+          <Button
+            as={Link}
             to={user ? '/dashboard' : '/auth'}
-            className="btn-gradient"
+            variant="primary"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '14px 36px', borderRadius: 12, fontSize: 15,
-              fontWeight: 700, textDecoration: 'none', color: 'white',
+              padding: '16px 48px', borderRadius: 14, fontSize: 16,
+              textDecoration: 'none',
             }}
           >
             {user ? 'Go to Dashboard' : 'Create Free Account'}
-            <ArrowRight size={16} />
-          </Link>
+            <ArrowRight size={18} />
+          </Button>
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid var(--border)', padding: '24px',
-        textAlign: 'center', color: 'var(--text-secondary)', fontSize: 13,
-      }}>
-        © {new Date().getFullYear()} TriggerPulse · Built to keep backends alive
-      </footer>
+      <Footer variant="detailed" />
     </div>
   );
 }

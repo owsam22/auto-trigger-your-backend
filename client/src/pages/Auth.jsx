@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { Zap, Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Zap, Mail, Lock, Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import Button from '../components/button';
+import { Footer } from '../components/Footer';
+import { Link } from 'react-router-dom';
 
 export default function Auth() {
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -42,12 +45,17 @@ export default function Auth() {
   return (
     <div style={{
       minHeight: 'calc(100vh - 64px)', display: 'flex',
-      alignItems: 'center', justifyContent: 'center',
-      padding: '40px 24px', position: 'relative', overflow: 'hidden',
+      flexDirection: 'column',
+      position: 'relative', overflow: 'hidden',
     }}>
       {/* Orbs */}
       <div className="orb" style={{ width: 400, height: 400, background: '#6366f1', opacity: 0.07, top: '10%', left: '15%' }} />
       <div className="orb" style={{ width: 300, height: 300, background: '#8b5cf6', opacity: 0.07, bottom: '10%', right: '15%', animationDelay: '3s' }} />
+
+      <div style={{ 
+        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', 
+        padding: '40px 24px', position: 'relative', zIndex: 1 
+      }}>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -66,6 +74,19 @@ export default function Auth() {
             border: '1px solid #e2e8f0',
           }}
         >
+          {/* Back button */}
+          <Link to="/" style={{ 
+            display: 'flex', alignItems: 'center', gap: 6, 
+            fontSize: 13, color: 'var(--text-secondary)', 
+            textDecoration: 'none', marginBottom: 24,
+            fontWeight: 500, transition: 'color 0.2s'
+          }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-blue)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+          >
+            <ArrowLeft size={14} /> Back to Home
+          </Link>
+
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{
@@ -146,15 +167,14 @@ export default function Auth() {
               </div>
             )}
 
-            <button type="submit" disabled={loading} className="btn-gradient" style={{
-              width: '100%', padding: '13px 0', borderRadius: 12, fontSize: 15,
-              fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 8, opacity: loading ? 0.7 : 1,
+            <Button type="submit" disabled={loading} fullWidth variant="primary" style={{
+              padding: '13px 0', borderRadius: 12, fontSize: 15,
+              fontWeight: 700, opacity: loading ? 0.7 : 1,
             }}>
               {loading
                 ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {mode === 'login' ? 'Signing in...' : 'Creating...'}</>
                 : mode === 'login' ? 'Sign In' : 'Create Account'}
-            </button>
+            </Button>
           </form>
 
           <p style={{ textAlign: 'center', marginTop: 24, fontSize: 14, color: 'var(--text-secondary)' }}>
@@ -169,6 +189,8 @@ export default function Auth() {
           </p>
         </motion.div>
       </AnimatePresence>
+      </div>
+      <Footer variant="simple" />
     </div>
   );
 }
