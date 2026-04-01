@@ -7,7 +7,7 @@ import { StatCard } from '../components/StatCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { LoadingSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
 import { SubmitModal } from '../components/SubmitModal';
-import { PlusCircle, RefreshCw, Search, Link2, Clock } from 'lucide-react';
+import { PlusCircle, RefreshCw, Search, Link2, Clock, Trash2 } from 'lucide-react';
 import Button from '../components/button';
 import { Footer } from '../components/Footer';
 
@@ -38,6 +38,18 @@ export default function Dashboard() {
       setRefreshing(false);
     }
   }, []);
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure? This is irreversible.")) {
+      try {
+        await api.delete(`/submissions/${id}`);
+        toast.success("Submission deleted successfully!");
+        fetchSubmissions(true);
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Failed to delete');
+      }
+    }
+  };
 
   useEffect(() => { fetchSubmissions(); }, [fetchSubmissions]);
 
@@ -91,7 +103,13 @@ export default function Dashboard() {
               [0,1].map(i => <CardSkeleton key={i} />)
             ) : (
               <>
-                <StatCard icon="🔗" label="Total URLs"   value={stats.total}   color="#6366f1" delay={0}    />
+                <StatCard 
+                  icon="🔗" 
+                  label={user?.isAdmin ? "Total URLs" : "Free Plan Usage"} 
+                  value={user?.isAdmin ? stats.total : `${stats.total} / 3`} 
+                  color="#6366f1" 
+                  delay={0}    
+                />
                 <StatCard icon="✅" label="Active"        value={stats.active}  color="#4ade80" delay={0.1}  />
               </>
             )}
@@ -138,6 +156,7 @@ export default function Dashboard() {
                         <th>URL</th>
                         <th><div style={{ display:'flex', alignItems:'center', gap:5 }}><Clock size={12} />Last Triggered</div></th>
                         <th>Status</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -151,13 +170,27 @@ export default function Dashboard() {
                         <tr key={sub._id}>
                           <td style={{ maxWidth: 400, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                             <a href={sub.url} target="_blank" rel="noopener noreferrer"
-                              style={{ color: '#4f46e5', fontWeight: 500, textDecoration: 'none', fontSize: 14 }}
+                              style={{ color: '#4f46e5', fontWeight: 500, textDecoration: 'none', fontSize: 13 }}
                               title={sub.url}>
                               {sub.url}
                             </a>
                           </td>
-                          <td style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{fmtDate(sub.lastTriggered)}</td>
+                          <td style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{fmtDate(sub.lastTriggered)}</td>
                           <td><StatusBadge status={sub.status} /></td>
+                          <td style={{ textAlign: 'right' }}>
+                            <button 
+                              onClick={() => handleDelete(sub._id)}
+                              style={{ 
+                                padding: 6, borderRadius: 6, border: '1px solid #fecaca', 
+                                background: 'rgba(239, 68, 68, 0.05)', color: '#f87171',
+                                cursor: 'pointer', transition: 'all 0.2s',
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)'}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

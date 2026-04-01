@@ -62,12 +62,12 @@ const triggerSingleSubmission = async (submission) => {
 // ----------------------
 const triggerApprovedUrls = async () => {
   try {
-    // 🔥 Trigger ALL approved URLs at once every 9 mins
+    // 🔥 Trigger ALL approved URLs at once every 10 mins
     const toTrigger = await Submission.find({ status: 'approved' });
 
     if (!toTrigger.length) return;
 
-    console.log(`[CRON] ⚡ Triggering ${toTrigger.length} URLs (9-min cycle)`);
+    console.log(`[CRON] ⚡ Triggering ${toTrigger.length} URLs (10-min cycle)`);
 
     await Promise.allSettled(
       toTrigger.map(sub => limit(() => triggerSingleSubmission(sub)))
@@ -96,13 +96,13 @@ const selfPing = async () => {
 // START SYSTEM
 // ----------------------
 const startTriggerJob = () => {
-  // 🔥 Run strictly every 9 minutes
-  cron.schedule('*/9 * * * *', triggerApprovedUrls);
+  // 🔥 Run strictly every 10 minutes
+  cron.schedule('*/10 * * * *', triggerApprovedUrls);
 
   // Keep Render alive
   cron.schedule('*/5 * * * *', selfPing);
 
-  console.log('[CRON] 🚀 Trigger System Active (9-min interval)');
+  console.log('[CRON] 🚀 Trigger System Active (10-min interval)');
 };
 
 module.exports = { startTriggerJob, triggerApprovedUrls, triggerSingleSubmission };
