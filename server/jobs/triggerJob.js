@@ -82,7 +82,7 @@ const triggerApprovedUrls = async () => {
 // KEEP BACKEND ALIVE
 // ----------------------
 const selfPing = async () => {
-  const url = process.env.SELF_URL || `http://localhost:5000`;
+  const url = process.env.SELF_URL;
   if (!url) return;
 
   try {
