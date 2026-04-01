@@ -7,7 +7,8 @@ import { StatCard } from '../components/StatCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { LoadingSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
 import { SubmitModal } from '../components/SubmitModal';
-import { PlusCircle, RefreshCw, Search, Link2, Clock, Trash2 } from 'lucide-react';
+import { UniversalModal } from '../components/UniversalModal';
+import { PlusCircle, RefreshCw, Search, Link2, Clock, Trash2, AlertTriangle } from 'lucide-react';
 import Button from '../components/button';
 import { Footer } from '../components/Footer';
 
@@ -23,6 +24,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [subToDelete, setSubToDelete] = useState(null);
   const [search, setSearch] = useState('');
 
   const fetchSubmissions = useCallback(async (silent = false) => {
@@ -39,16 +42,22 @@ export default function Dashboard() {
     }
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure? This is irreversible.")) {
-      try {
-        await api.delete(`/submissions/${id}`);
-        toast.success("Submission deleted successfully!");
-        fetchSubmissions(true);
-      } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to delete');
-      }
+  const confirmDelete = async () => {
+    if (!subToDelete) return;
+    try {
+      await api.delete(`/submissions/${subToDelete._id}`);
+      toast.success("Submission deleted successfully!");
+      setDeleteModalOpen(false);
+      setSubToDelete(null);
+      fetchSubmissions(true);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete');
     }
+  };
+
+  const handleDeleteClick = (sub) => {
+    setSubToDelete(sub);
+    setDeleteModalOpen(true);
   };
 
   useEffect(() => { fetchSubmissions(); }, [fetchSubmissions]);
@@ -179,7 +188,7 @@ export default function Dashboard() {
                           <td><StatusBadge status={sub.status} /></td>
                           <td style={{ textAlign: 'right' }}>
                             <button 
-                              onClick={() => handleDelete(sub._id)}
+                              onClick={() => handleDeleteClick(sub)}
                               style={{ 
                                 padding: 6, borderRadius: 6, border: '1px solid #fecaca', 
                                 background: 'rgba(239, 68, 68, 0.05)', color: '#f87171',
@@ -203,6 +212,67 @@ export default function Dashboard() {
       </div>
 
       <SubmitModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSuccess={() => fetchSubmissions(true)} />
+      
+      {/* Universal Deletion Confirm */}
+      <UniversalModal 
+        isOpen={deleteModalOpen} 
+        onClose={() => { setDeleteModalOpen(false); setSubToDelete(null); }}
+        maxWidth={420}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 64, height: 64, background: '#fef2f2', 
+            borderRadius: '50%', display: 'flex', alignItems: 'center', 
+            justifyContent: 'center', margin: '0 auto 24px',
+            border: '1px solid #fecaca'
+          }}>
+            <AlertTriangle size={32} color="#ef4444" />
+          </div>
+
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 12 }}>
+            Are you sure?
+          </h2>
+          <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
+            You are about to delete:
+            <br />
+            <span style={{ fontWeight: 600, color: '#334155', wordBreak: 'break-all' }}>{subToDelete?.url}</span>
+          </p>
+          
+          <div style={{
+            background: '#fff1f2', border: '1px solid #fda4af',
+            borderRadius: 12, padding: '10px 16px', marginBottom: 32,
+            fontSize: 13, color: '#e11d48', fontWeight: 600,
+            maxWidth: 'fit-content', margin: '0 auto 32px'
+          }}>
+            ⚠️ this is irreversable
+          </div>
+
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button 
+              onClick={() => { setDeleteModalOpen(false); setSubToDelete(null); }}
+              style={{
+                flex: 1, padding: '12px 0', borderRadius: 12, 
+                border: '1px solid #e2e8f0', background: '#f8fafc',
+                color: '#64748b', fontSize: 14, fontWeight: 600,
+                cursor: 'pointer', transition: 'all 0.2s'
+              }}
+            >
+              Cancel
+            </button>
+            <Button 
+              onClick={confirmDelete}
+              variant="primary"
+              style={{ 
+                flex: 1, borderRadius: 12, background: '#ef4444',
+                boxShadow: '0 8px 20px rgba(239, 68, 68, 0.2)' 
+              }}
+            >
+              Delete Now
+            </Button>
+          </div>
+        </div>
+      </UniversalModal>
+
       <Footer variant="simple" />
     </div>
   );

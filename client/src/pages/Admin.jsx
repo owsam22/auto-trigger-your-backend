@@ -6,9 +6,10 @@ import { StatusBadge } from '../components/StatusBadge';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { StatCard } from '../components/StatCard';
 import { CardSkeleton } from '../components/LoadingSkeleton';
-import { Shield, RefreshCw, CheckCircle, XCircle, Trash2, Search, User } from 'lucide-react';
+import { Shield, RefreshCw, CheckCircle, XCircle, Trash2, Search, User, AlertTriangle } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import Button from '../components/button';
+import { UniversalModal } from '../components/UniversalModal';
 
 const fmtDate = (d) => d ? new Date(d).toLocaleString('en-US', {
   month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -21,6 +22,8 @@ export default function Admin() {
   const [loadingStats, setLoadingStats] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [actionId, setActionId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [subToDelete, setSubToDelete] = useState(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
 
@@ -54,10 +57,6 @@ export default function Admin() {
       } else if (type === 'reject') {
         await api.patch(`/admin/reject/${id}`);
         toast.success('❌ URL rejected');
-      } else if (type === 'delete') {
-        if (!window.confirm('Delete this submission?')) { setActionId(null); return; }
-        await api.delete(`/admin/delete/${id}`);
-        toast.success('🗑️ Deleted');
       }
       fetchData(true);
     } catch (err) {
@@ -65,6 +64,27 @@ export default function Admin() {
     } finally {
       setActionId(null);
     }
+  };
+
+  const confirmDelete = async () => {
+    if (!subToDelete) return;
+    setActionId(subToDelete._id);
+    try {
+      await api.delete(`/admin/delete/${subToDelete._id}`);
+      toast.success('🗑️ Deleted');
+      setDeleteModalOpen(false);
+      setSubToDelete(null);
+      fetchData(true);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Delete failed');
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const handleDeleteClick = (sub) => {
+    setSubToDelete(sub);
+    setDeleteModalOpen(true);
   };
 
   const filtered = submissions.filter(s => {
@@ -230,7 +250,7 @@ export default function Admin() {
                               </Button>
                             )}
                             <Button
-                              onClick={() => handleAction('delete', sub._id)}
+                              onClick={() => handleDeleteClick(sub)}
                               disabled={actionId === sub._id}
                               size="small"
                               style={{
@@ -238,6 +258,7 @@ export default function Admin() {
                                 display:'flex', alignItems:'center', justifyContent:'center',
                                 opacity: actionId === sub._id ? 0.5 : 1,
                                 border: '1px solid #e2e8f0',
+                                background: 'rgba(239, 68, 68, 0.05)', color: '#f87171'
                               }}
                             >
                               <Trash2 size={13} />
@@ -253,6 +274,66 @@ export default function Admin() {
           </motion.div>
         </div>
       </div>
+
+      <UniversalModal 
+        isOpen={deleteModalOpen} 
+        onClose={() => { setDeleteModalOpen(false); setSubToDelete(null); }}
+        maxWidth={420}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 64, height: 64, background: '#fef2f2', 
+            borderRadius: '50%', display: 'flex', alignItems: 'center', 
+            justifyContent: 'center', margin: '0 auto 24px',
+            border: '1px solid #fecaca'
+          }}>
+            <AlertTriangle size={32} color="#ef4444" />
+          </div>
+
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 12 }}>
+            Admin Delete
+          </h2>
+          <p style={{ color: '#64748b', fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
+            Deleting submission:
+            <br />
+            <span style={{ fontWeight: 600, color: '#334155', wordBreak: 'break-all' }}>{subToDelete?.url}</span>
+          </p>
+          
+          <div style={{
+            background: '#fff1f2', border: '1px solid #fda4af',
+            borderRadius: 12, padding: '10px 16px', marginBottom: 32,
+            fontSize: 13, color: '#e11d48', fontWeight: 600,
+            maxWidth: 'fit-content', margin: '0 auto 32px'
+          }}>
+            ⚠️ this is irreversable
+          </div>
+
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button 
+              onClick={() => { setDeleteModalOpen(false); setSubToDelete(null); }}
+              style={{
+                flex: 1, padding: '12px 0', borderRadius: 12, 
+                border: '1px solid #e2e8f0', background: '#f8fafc',
+                color: '#64748b', fontSize: 14, fontWeight: 600,
+                cursor: 'pointer', transition: 'all 0.2s'
+              }}
+            >
+              Cancel
+            </button>
+            <Button 
+              onClick={confirmDelete}
+              variant="primary"
+              style={{ 
+                flex: 1, borderRadius: 12, background: '#ef4444',
+                boxShadow: '0 8px 20px rgba(239, 68, 68, 0.2)' 
+              }}
+            >
+              Final Delete
+            </Button>
+          </div>
+        </div>
+      </UniversalModal>
+
       <Footer variant="simple" />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +18,7 @@ export default function Auth() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const passwordRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,6 +124,12 @@ export default function Auth() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      passwordRef.current.focus();
+                    }
+                  }}
                   style={{ paddingLeft: 36 }}
                   autoComplete="email"
                 />
@@ -144,6 +151,7 @@ export default function Auth() {
                   placeholder={mode === 'register' ? 'Minimum 6 characters' : '••••••••'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
+                  ref={passwordRef}
                   style={{ paddingLeft: 36, paddingRight: 40 }}
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 />
