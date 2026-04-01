@@ -1,58 +1,102 @@
 <div align="center">
   <img src="https://i.pinimg.com/originals/71/65/88/71658839bb2fea95bdbc036076e9324b.gif" width="120" alt="TriggerPulse Pulse" />
   <h1>TriggerPulse ⚡</h1>
-  <p><strong>Keep your sleeping backends awake and responsive, automatically.</strong></p>
+  <p><strong>Eliminate cold starts. Keep your backends awake — automatically.</strong></p>
 </div>
 
 ---
 
-**TriggerPulse** is a professional backend monitoring and wake-up service designed to prevent cold starts on services like Render, Heroku, or any free-tier hosting that sleeps after inactivity.
+## 🚀 What is TriggerPulse?
 
-### 🌐 Live Application
-- **App**: [https://auto-trigger-your-backend.vercel.app](https://auto-trigger-your-backend.vercel.app) 
+**TriggerPulse** is a self-hosted backend trigger system that prevents your services from going idle.
+
+Free-tier platforms like Render or similar providers often put apps to sleep after inactivity. TriggerPulse solves that by **automatically pinging your backend at controlled intervals**, ensuring it's always ready when users hit it.
 
 ---
 
-## 🔥 Key Features
+## 🌐 Live Application
+- **App**: https://auto-trigger-your-backend.vercel.app
 
-- **Instant Activation**: Your first trigger happens immediately upon admin approval.
-- **Optimized 10-Min Cycle**: Staggered auto-triggering ensures your backends stay awake without overloading our servers.
-- **Smart 5-Min Self-Ping**: Background workers keep our own service alive continuously.
-- **Unified "One Box" UI**: Beautiful, fully-centered Universal Modals powered by *Framer Motion* for submissions, alerts, and deletion flows.
-- **Self-Service Deletion**: Users can permanently remove their submissions via a secure, irreversible deletion workflow to reclaim their quota.
+---
 
-## 👥 Usage & Quotas
+## ⚡ Core Capabilities
 
-### Free Plan (Standard User)
-- Submit and monitor up to **3 active backend URLs**.
-- Delete URLs directly from your customized dashboard to free up slots.
-- Clean, minimal dashboard tracking the 'Last Triggered' timestamp, consecutive failures, and "Alive/Unstable" status.
+- **Auto Wake-Up Engine**  
+  Keeps services alive with scheduled background triggers.
 
-### Admin Plan
-- Unlimited URL monitoring.
-- Powerful Admin Panel to **Approve, Reject, or Force-Delete** any global submission.
-- Real-time global stats (Total, Pending, Approved, Rejected, Unstable).
+- **Smart Retry Logic**  
+  Handles cold starts intelligently — timeouts don’t break the system.
+
+- **Controlled Concurrency**  
+  Prevents overload using batched request execution.
+
+- **Self-Keep-Alive System**  
+  Built-in self-ping ensures the trigger service itself never sleeps.
+
+- **Approval-Based Filtering**  
+  Only verified URLs are activated — no spam, no garbage requests.
+
+---
+
+## 🧠 How It Works
+
+1. Users submit backend URLs  
+2. Admin approves valid services  
+3. TriggerPulse:
+   - Pings each service at intervals  
+   - Detects failures vs wake-ups  
+   - Maintains uptime stability automatically  
+
+---
+
+## 👥 Usage
+
+### Standard Users
+- Submit up to **3 backend URLs**
+- Monitor:
+  - Last Trigger Time  
+  - Status (Alive / Unstable)  
+  - Failure count  
+- Delete submissions anytime to manage quota  
+
+---
+
+### Admin
+- Full control over all submissions  
+- Approve / Reject / Remove URLs  
+- Monitor global system health and stats  
 
 ---
 
 ## 🛠 Tech Stack
 
 ### Frontend
-- **React + Vite**: Lightning-fast build and HMR.
-- **Framer Motion**: Spring-based animations for modals, dashboards, and page transitions.
-- **Lucide React**: Clean, modern iconography perfectly aligned with our glassmorphic aesthetic.
-- **Axios**: Network requests with JWT interceptors.
+- React (Vite)
+- Framer Motion
+- Axios
 
 ### Backend
-- **Node.js + Express**: Robust REST API router logic.
-- **MongoDB + Mongoose**: Persistent schema-based storage for Users and Submissions.
-- **JSON Web Tokens (JWT)**: Secure, stateless authentication with `HttpOnly` cookie-like security (via headers).
-- **Node-Cron**: Powering the core 10-minute automated trigger engine.
-- **Bcrypt.js**: Industry-standard password hashing.
+- Node.js + Express
+- MongoDB (Mongoose)
+- JWT Authentication
+- Node-Cron (scheduler)
+- Bcrypt (security)
 
 ---
 
-## 👨‍💻 Built By
-Created with ❤️ by **[owsam22](https://github.com/owsam22)**. 
+## 🎯 Why This Exists
 
-If this project saved you from cold-start latency headaches, feel free to give it a ⭐ on GitHub!
+Cold starts kill user experience.
+
+TriggerPulse exists to:
+- eliminate startup delays  
+- maintain backend responsiveness  
+- give developers control over uptime — without paid plans  
+
+---
+
+## 👨‍💻 Author
+
+Built by **[owsam22](https://github.com/owsam22)**  
+
+If this project helps you, ⭐ the repo — or better, fork it and improve it.
