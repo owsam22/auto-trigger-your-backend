@@ -1,12 +1,14 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useServerStatus } from '../context/ServerStatusContext';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn } from 'lucide-react';
+import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn, AlertTriangle } from 'lucide-react';
 import Button from './button';
 
 export const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
+  const { isServerDown } = useServerStatus();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -109,6 +111,19 @@ export const Navbar = () => {
           )}
         </div>
       </div>
+      
+      {/* Server Down Banner */}
+      {isServerDown && (
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, right: 0,
+          background: '#ef4444', color: 'white', fontSize: 13,
+          fontWeight: 600, textAlign: 'center', padding: '8px 0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)',
+        }}>
+          <AlertTriangle size={16} /> The service is temporarily unavailable. Contact admin for this.
+        </div>
+      )}
     </motion.nav>
   );
 };

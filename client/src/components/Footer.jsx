@@ -54,7 +54,7 @@ export const Footer = ({ variant = 'simple' }) => {
               Keep your services warm, responsive, and always ready for your users.
             </p>
             <div className="socials">
-              <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer"><Code size={20} /></a>
+              <a href="https://samarpan-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer"><Code size={20} /></a>
               <a href="#"><Globe size={20} /></a>
               <a href="mailto:22.samarpan@gmail.com"><Mail size={20} /></a>
             </div>

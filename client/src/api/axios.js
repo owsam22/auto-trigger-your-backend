@@ -12,10 +12,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 globally
+// Handle errors globally
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    window.dispatchEvent(new Event('server-up'));
+    return res;
+  },
   (err) => {
+    if (err.message === 'Network Error' || (err.response && err.response.status >= 500)) {
+      window.dispatchEvent(new Event('server-down'));
+    } else {
+      window.dispatchEvent(new Event('server-up'));
+    }
+    
     if (err.response?.status === 401) {
       localStorage.removeItem('tp_token');
       localStorage.removeItem('tp_user');

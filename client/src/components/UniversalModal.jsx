@@ -57,6 +57,7 @@ export const UniversalModal = ({
           >
             {/* Close Button */}
             <button 
+              className="universal-close-btn"
               type="button"
               onClick={onClose}
               style={{

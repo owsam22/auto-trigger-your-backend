@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ServerStatusProvider, useServerStatus } from './context/ServerStatusContext';
 import { Navbar } from './components/Navbar';
+import { UniversalModal } from './components/UniversalModal';
+import { ServerOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
@@ -65,12 +69,72 @@ function AppRoutes() {
   );
 }
 
+const ServerDownInterceptor = () => {
+  const { isServerDown } = useServerStatus();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalClick = (e) => {
+      // Intercept clicks on buttons or links when the server is down
+      if (isServerDown && e.target.closest('button, a')) {
+        // Prevent blocking clicks inside the modal itself so users can dismiss it
+        if (e.target.closest('.server-down-modal, .universal-close-btn')) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        setModalOpen(true);
+      }
+    };
+
+    if (isServerDown) {
+      document.addEventListener('click', handleGlobalClick, true); // Use capture phase
+    }
+
+    return () => {
+      document.removeEventListener('click', handleGlobalClick, true);
+    };
+  }, [isServerDown]);
+
+  return (
+    <UniversalModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+      <div className="server-down-modal" style={{ textAlign: 'center', padding: '10px 0' }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: '50%',
+          background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 20px',
+        }}>
+          <ServerOff size={28} />
+        </div>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>
+          Service Unavailable
+        </h3>
+        <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24 }}>
+          The service is temporarily unavailable. Please contact the admin for this.
+        </p>
+        <button
+          onClick={() => setModalOpen(false)}
+          style={{
+            width: '100%', padding: '12px 0', borderRadius: 12, border: 'none',
+            background: 'var(--gradient)', color: 'white', fontWeight: 600, fontSize: 15,
+            cursor: 'pointer'
+          }}
+        >
+          Acknowledge
+        </button>
+      </div>
+    </UniversalModal>
+  );
+};
+
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-        <Toaster
+      <ServerStatusProvider>
+        <AuthProvider>
+          <ServerDownInterceptor />
+          <AppRoutes />
+          <Toaster
           position="top-right"
           toastOptions={{
             duration: 3500,
@@ -87,7 +151,8 @@ export default function App() {
             error:   { iconTheme: { primary: '#f87171', secondary: '#0f0f1a' } },
           }}
         />
-      </AuthProvider>
+        </AuthProvider>
+      </ServerStatusProvider>
     </BrowserRouter>
   );
 }
