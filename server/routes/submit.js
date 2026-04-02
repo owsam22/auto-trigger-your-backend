@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Submission = require('../models/Submission');
 const protect = require('../middleware/auth');
+const { requireVerified } = require('../middleware/auth');
 
 const isValidUrl = (str) => {
   try {
@@ -13,7 +14,7 @@ const isValidUrl = (str) => {
 };
 
 // POST /api/submissions/create
-router.post('/create', protect, async (req, res) => {
+router.post('/create', protect, requireVerified, async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ message: 'URL is required' });
   if (!isValidUrl(url)) return res.status(400).json({ message: 'Invalid URL format' });
@@ -40,7 +41,7 @@ router.post('/create', protect, async (req, res) => {
 });
 
 // GET /api/submissions/mine
-router.get('/mine', protect, async (req, res) => {
+router.get('/mine', protect, requireVerified, async (req, res) => {
   try {
     console.log(`[SUBS] Fetching for user: ${req.user._id}`);
     const submissions = await Submission.find({ submittedBy: req.user._id }).sort({ createdAt: -1 });
@@ -52,7 +53,7 @@ router.get('/mine', protect, async (req, res) => {
 });
 
 // DELETE /api/submissions/:id
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, requireVerified, async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission) return res.status(404).json({ message: 'Submission not found' });

@@ -18,6 +18,31 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
+  // ── Email Verification ──────────────────────────────────────────────────────
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: {
+    type: String,
+    default: null,
+  },
+  emailVerificationExpiry: {
+    type: Date,
+    default: null,
+  },
+  // Daily resend throttle: track sent count + the date it was last reset
+  verificationEmailsSentToday: {
+    type: Number,
+    default: 0,
+  },
+  verificationEmailsSentDate: {
+    type: Date,
+    default: null,
+  },
+  // ────────────────────────────────────────────────────────────────────────────
+
 }, { timestamps: true });
 
 // Hash password before saving
