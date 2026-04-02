@@ -36,6 +36,9 @@ Free-tier platforms like Render or similar providers often put apps to sleep aft
 - **Approval-Based Filtering**  
   Only verified URLs are activated — no spam, no garbage requests.
 
+- **Secure Email Verification**  
+  Built with Resend to ensure only valid users can submit URLs and access the dashboard.
+
 ---
 
 ## 🧠 How It Works
