@@ -10,28 +10,42 @@ import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
+import VerifyEmail from './pages/VerifyEmail';
 
-// Protected route: must be logged in
+// Protected route: must be logged in AND email verified (unless admin)
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, isEmailVerified, isAdmin } = useAuth();
   if (loading) return <PageLoader />;
-  return user ? children : <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to="/auth" replace />;
+  if (!isEmailVerified && !isAdmin) return <Navigate to="/verify-email" replace />;
+  return children;
 };
 
 // Admin route: must be admin
 const AdminRoute = ({ children }) => {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin, isEmailVerified } = useAuth();
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/auth" replace />;
   if (!isAdmin) return <Navigate to="/dashboard" replace />;
   return children;
 };
 
-// Auth route: redirect to dashboard if already logged in
+// Auth route: redirect to dashboard if already logged in and verified (or admin)
 const GuestRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, isEmailVerified, isAdmin } = useAuth();
   if (loading) return <PageLoader />;
-  return user ? <Navigate to="/dashboard" replace /> : children;
+  if (user && (isEmailVerified || isAdmin)) return <Navigate to="/dashboard" replace />;
+  if (user && !isEmailVerified && !isAdmin) return <Navigate to="/verify-email" replace />;
+  return children;
+};
+
+// Verify-email route: only for logged-in unverified users
+const VerifyEmailRoute = ({ children }) => {
+  const { user, loading, isEmailVerified, isAdmin } = useAuth();
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/auth" replace />;
+  if (isEmailVerified || isAdmin) return <Navigate to="/dashboard" replace />;
+  return children;
 };
 
 const PageLoader = () => (
@@ -56,6 +70,9 @@ function AppRoutes() {
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={
           <GuestRoute><Auth /></GuestRoute>
+        } />
+        <Route path="/verify-email" element={
+          <VerifyEmailRoute><VerifyEmail /></VerifyEmailRoute>
         } />
         <Route path="/dashboard" element={
           <PrivateRoute><Dashboard /></PrivateRoute>
