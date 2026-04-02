@@ -107,7 +107,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Stats */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16, marginBottom: 32 }}>
             {loading ? (
               [0,1].map(i => <CardSkeleton key={i} />)
             ) : (

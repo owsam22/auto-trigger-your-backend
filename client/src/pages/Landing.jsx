@@ -62,7 +62,7 @@ const DashboardPreview = () => (
     transition={{ delay: 0.4, duration: 0.8 }}
     className="glass"
     style={{
-      padding: 32,
+      padding: 'clamp(20px, 5vw, 32px)',
       borderRadius: 32,
       width: '100%',
       maxWidth: 500,
@@ -168,7 +168,7 @@ export default function Landing() {
         <div className="orb" style={{ width: 600, height: 600, background: 'rgba(139, 92, 246, 0.05)', top: -200, right: '-10%', filter: 'blur(140px)' }} />
         <div className="orb" style={{ width: 400, height: 400, background: 'rgba(99, 102, 241, 0.05)', bottom: 30, left: '-5%', filter: 'blur(120px)' }} />
 
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: 40, alignItems: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: 40, alignItems: 'center' }}>
           
           {/* Left Column */}
           <div style={{ textAlign: 'left' }}>
@@ -191,7 +191,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              style={{ fontSize: 'clamp(42px, 6vw, 84px)', fontWeight: 900, lineHeight: 1,
+              style={{ fontSize: 'clamp(36px, 8vw, 84px)', fontWeight: 900, lineHeight: 1.1,
                 letterSpacing: '-0.04em', marginBottom: 32, color: 'var(--text-primary)' }}
             >
               Keep Your Backend<br />
@@ -258,7 +258,7 @@ export default function Landing() {
           viewport={{ once: true }}
           style={{ textAlign: 'center', marginBottom: 80 }}
         >
-          <h2 style={{ fontSize: 40, fontWeight: 900, letterSpacing: '-0.02em', marginBottom: 16 }}>
+          <h2 style={{ fontSize: 'clamp(32px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em', marginBottom: 16 }}>
             Everything you need to stay <span style={{ color: 'var(--accent-purple)' }}>Online</span>
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: 18 }}>
@@ -266,7 +266,7 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 32 }}>
           {features.map((f, i) => (
             <motion.div
               key={f.title}
@@ -301,12 +301,12 @@ export default function Landing() {
             viewport={{ once: true }}
             style={{ textAlign: 'center', marginBottom: 64 }}
           >
-            <h2 style={{ fontSize: 40, fontWeight: 900, letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontSize: 'clamp(32px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em' }}>
               How it <span style={{ color: 'var(--accent-purple)' }}>works</span>
             </h2>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 40 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 40 }}>
             {steps.map((s, i) => (
               <motion.div
                 key={s.num}
@@ -336,13 +336,13 @@ export default function Landing() {
           className="glass"
           style={{
             maxWidth: 800, margin: '0 auto', borderRadius: 40,
-            padding: '80px 40px',
+            padding: 'clamp(40px, 8vw, 80px) clamp(20px, 5vw, 40px)',
             background: 'linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.05) 100%)',
             border: '1px solid rgba(139, 92, 246, 0.2)',
           }}
         >
           <Globe size={48} color="#8b5cf6" style={{ marginBottom: 24, opacity: 0.8 }} />
-          <h2 style={{ fontSize: 42, fontWeight: 900, marginBottom: 16, letterSpacing: '-0.03em' }}>
+          <h2 style={{ fontSize: 'clamp(32px, 6vw, 42px)', fontWeight: 900, marginBottom: 16, letterSpacing: '-0.03em' }}>
             Start monitoring today
           </h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 40, fontSize: 18, maxWidth: 500, margin: '0 auto 40px' }}>

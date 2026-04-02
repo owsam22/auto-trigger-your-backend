@@ -128,7 +128,7 @@ export default function Admin() {
           </motion.div>
 
           {/* Stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px,1fr))', gap:16, marginBottom:28 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(min(100%, 160px),1fr))', gap:16, marginBottom:28 }}>
             {loadingStats ? [0,1,2,3,4].map(i => <CardSkeleton key={i} />) : (
               <>
                 <StatCard icon="🔗" label="Total"    value={stats?.total    || 0} color="#6366f1" delay={0}    />

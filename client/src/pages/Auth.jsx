@@ -92,7 +92,7 @@ export default function Auth() {
           className="glass"
           style={{
             width: '100%', maxWidth: 420, borderRadius: 24,
-            padding: '40px 36px',
+            padding: 'clamp(24px, 6vw, 40px) clamp(20px, 5vw, 36px)',
             boxShadow: '0 20px 50px rgba(0,0,0,0.06)',
             position: 'relative',
             background: '#ffffff',

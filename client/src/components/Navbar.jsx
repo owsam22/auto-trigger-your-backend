@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn, AlertTriangle } from 'lucide-react';
 import Button from './button';
+import { AnimatePresence } from 'framer-motion';
 
 export const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -60,7 +61,7 @@ export const Navbar = () => {
         </Link>
 
         {/* Desktop nav */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="hidden md:flex items-center gap-2">
           {navLinks.map(link => (
             <Link key={link.to} to={link.to} style={{
               display: 'flex', alignItems: 'center', gap: 6,
@@ -110,9 +111,18 @@ export const Navbar = () => {
             </Button>
           )}
         </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden flex items-center">
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ 
+            background: 'none', border: 'none', padding: 8, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center'
+          }}>
+            {menuOpen ? <X size={24} color="#64748b" /> : <Menu size={24} color="#64748b" />}
+          </button>
+        </div>
       </div>
       
-      {/* Server Down Banner */}
       {isServerDown && (
         <div style={{
           position: 'absolute', top: '100%', left: 0, right: 0,
@@ -124,6 +134,58 @@ export const Navbar = () => {
           <AlertTriangle size={16} /> The service is under maintenance. Please contact the admin or try again later.
         </div>
       )}
+
+      {/* Mobile Nav Dropdown */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            style={{ 
+              overflow: 'hidden', background: 'rgba(255,255,255,0.95)', 
+              backdropFilter: 'blur(20px)', borderBottom: '1px solid #e5e7eb',
+              position: 'absolute', top: '100%', left: 0, right: 0,
+            }}
+          >
+            <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {navLinks.map(link => (
+                <Link key={link.to} to={link.to} 
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '12px 16px', borderRadius: 8, textDecoration: 'none',
+                    fontSize: 15, fontWeight: 500,
+                    color: location.pathname === link.to ? '#4f46e5' : '#64748b',
+                    background: location.pathname === link.to ? 'rgba(79, 70, 229, 0.05)' : '#f8fafc',
+                  }}
+                >
+                  {link.icon}{link.label}
+                </Link>
+              ))}
+              {user ? (
+                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 16, marginTop: 4 }}>
+                  <div style={{ fontSize: 13, color: '#64748b', marginBottom: 12, paddingLeft: 8 }}>
+                    Logged in as <b>{user.email}</b>
+                  </div>
+                  <button onClick={handleLogout} style={{
+                    display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                    padding: '12px 16px', borderRadius: 8, cursor: 'pointer',
+                    background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
+                    color: '#f87171', fontSize: 15, fontWeight: 500,
+                  }}>
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              ) : (
+                <Button as={Link} to="/auth" fullWidth onClick={() => setMenuOpen(false)}>
+                  <LogIn size={15} /> Sign In
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
