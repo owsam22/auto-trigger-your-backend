@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useServerStatus } from '../context/ServerStatusContext';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn, AlertTriangle } from 'lucide-react';
+import { Zap, LayoutDashboard, Shield, LogOut, Menu, X, LogIn, AlertTriangle, Home } from 'lucide-react';
 import Button from './button';
 import { AnimatePresence } from 'framer-motion';
 
@@ -21,6 +21,7 @@ export const Navbar = () => {
   };
 
   const navLinks = [
+    { to: '/', label: 'Home', icon: <Home size={15} /> },
     ...(user ? [{ to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> }] : []),
     ...(isAdmin ? [{ to: '/admin', label: 'Admin Panel', icon: <Shield size={15} /> }] : []),
   ];
