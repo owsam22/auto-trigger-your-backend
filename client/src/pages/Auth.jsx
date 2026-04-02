@@ -29,10 +29,34 @@ export default function Auth() {
     try {
       const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
       const { data } = await api.post(endpoint, { email, password });
+
+      if (mode === 'register') {
+        // Store token so VerifyEmail page can poll /check-verified
+        login(data.user, data.token);
+        toast.success('🎉 Account created! Please verify your email.');
+        navigate('/verify-email');
+        return;
+      }
+
+      // Login — check if server says email not verified
+      if (data.requiresVerification) {
+        login(data.user, data.token);
+        toast('📧 Please verify your email first.', { icon: '✉️' });
+        navigate('/verify-email');
+        return;
+      }
+
       login(data.user, data.token);
-      toast.success(mode === 'login' ? '👋 Welcome back!' : '🎉 Account created!');
+      toast.success('👋 Welcome back!');
       navigate('/dashboard');
     } catch (err) {
+      // Handle login blocked due to unverified email (403)
+      if (err.response?.status === 403 && err.response?.data?.requiresVerification) {
+        login(err.response.data.user, err.response.data.token);
+        toast('📧 Please verify your email first.', { icon: '✉️' });
+        navigate('/verify-email');
+        return;
+      }
       const msg = err.response?.data?.message || 'Something went wrong';
       setError(msg);
       toast.error(msg);
