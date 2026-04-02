@@ -24,6 +24,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('tp_user', JSON.stringify(userData));
   };
 
+  /**
+   * updateUser — used by VerifyEmail page after polling confirms verification.
+   * Updates both context state AND localStorage so the new JWT + user object
+   * are persisted without requiring a full re-login.
+   */
+  const updateUser = (userData, userToken) => {
+    setToken(userToken);
+    setUser(userData);
+    localStorage.setItem('tp_token', userToken);
+    localStorage.setItem('tp_user', JSON.stringify(userData));
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -32,7 +44,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading, isAdmin: user?.isAdmin }}>
+    <AuthContext.Provider value={{
+      user,
+      token,
+      login,
+      logout,
+      updateUser,
+      loading,
+      isAdmin: user?.isAdmin,
+      isEmailVerified: user?.isEmailVerified ?? false,
+    }}>
       {children}
     </AuthContext.Provider>
   );
